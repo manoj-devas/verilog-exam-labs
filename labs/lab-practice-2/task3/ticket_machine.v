@@ -1,7 +1,7 @@
 // next_credit: works out what credit should become at the next clock edge
 module next_credit (input [4:0] credit, input c5, c10, cancel, vend,
                     output reg [4:0] next);
-  reg [3:0] sum;                       // credit plus the coin inserted in this cycle
+  reg [4:0] sum;                       // credit plus the coin inserted in this cycle
   always @(*) begin
     sum = credit + (c5 ? 5'd5 : 5'd0) + (c10 ? 5'd10 : 5'd0);
     if (cancel)    next = 5'd0;        // money returned
@@ -12,7 +12,7 @@ endmodule
 
 // credit_reg: stores credit; rst_n clears it
 module credit_reg (input clk, rst_n, input [4:0] d, output reg [4:0] q);
-  always @(posedge clk)
+  always @(posedge clk or negedge !rst_n)
     if (!rst_n) q <= 5'd0;
     else        q <= d;
 endmodule
